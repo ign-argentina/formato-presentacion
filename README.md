@@ -5,7 +5,7 @@ Respeta la tipografía y paleta cromática del [_Manual de Marca y Estilo_](recu
 Se incluye una presentación de ejemplo y el código fuente para generarla.
 
 
-## Tipografías y compilación
+## Tipografía y compilación
 
 Los tipos de letra a utilizar no están disponibles en las distribuciones estándar de LaTeX.
 Se proveen en `recursos/tipografia/` en formato OpenType Font (otf):
