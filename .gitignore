@@ -165,6 +165,8 @@ Session.vim
 *.xdy
 *.tdo
 *.run.xml
+*.loc
+*.soc
 
 # Python
 *.pyc
