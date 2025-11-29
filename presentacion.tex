@@ -1,0 +1,614 @@
+%% Formato Beamer institucional IGN
+%% Victor Bettachini 2025
+%% vbettachini@ign.gob.ar
+
+\documentclass[aspectratio=169]{beamer} % proyector 16:9 | Ref:  https://en.wikibooks.org/wiki/LaTeX/Presentations
+
+\beamertemplatenavigationsymbolsempty %% Sin barra navegación
+
+%% Spanska!
+\usepackage[spanish]{babel}
+\def\spanishoptions{argentina}
+% \usepackage[utf8]{inputenc}	% not with xelatex / fontenc
+
+\usepackage{lmodern} % no producia letras en matemático | Ref: https://tex.stackexchange.com/questions/250413/error-when-using-greek-symbol-in-subscript-in-beamer-presentation 
+
+
+%% units
+\usepackage[locale=FR, per-mode=fraction]{siunitx}
+% \sisetup{detect-all} 
+\DeclareSIUnit\torr{torr}
+\DeclareSIUnit\atm{atm}
+
+%% Notación física - química
+% \usepackage[arrowdel]{physics}
+\usepackage{isotope} % $\isotope[A][Z]{X}\to\isotope[A-4][Z-2]{Y}+\isotope[4][2]{\alpha}$
+
+
+%% inclusión de gráficas
+\usepackage{graphicx}	% instalar ghostscript-x para que el dvi muestre los eps
+\graphicspath{ {./figs/} {./recursos/fondos/} {./recursos/logotipos/} } 
+\usepackage{rotating}	% epígrafe rotado
+% \usepackage{epstopdf}
+% \usepackage{pgf}
+
+\usepackage{changes} % textsub super script
+
+\usepackage{url} % urls
+
+%% verbatim with a smaller font size
+\usepackage{verbatim}
+\makeatletter
+\patchcmd{\verbatim@input}{\@verbatim}{\scriptsize\@verbatim}{}{}
+\makeatother
+
+%% Fuentes tipográficas IGN
+\usepackage{fontspec}
+% Force modern font encoding
+% \usepackage{unicode-math} % Recommended for math font compatibility
+% Disable legacy font encodings
+\renewcommand{\encodingdefault}{TU} % Unicode encoding
+
+% MONTSERRAT - All weights/variants
+\setsansfont{Montserrat}[
+	Path = ./recursos/tipografias/Montserrat_otf/,
+  Extension = .otf,
+  UprightFont = *-Regular,
+  ItalicFont = *-Italic,
+  FontFace = {ul}{n}{*-Thin},
+  FontFace = {ul}{it}{*-ThinItalic},
+  FontFace = {el}{n}{*-ExtraLight},
+  FontFace = {el}{it}{*-ExtraLightItalic},
+  FontFace = {l}{n}{*-Light},
+  FontFace = {l}{it}{*-LightItalic},
+  FontFace = {m}{n}{*-Medium},
+  FontFace = {m}{it}{*-MediumItalic},
+  FontFace = {sb}{n}{*-SemiBold},
+  FontFace = {sb}{it}{*-SemiBoldItalic},
+  FontFace = {b}{n}{*-Bold},
+  FontFace = {b}{it}{*-BoldItalic},
+  FontFace = {eb}{n}{*-ExtraBold},
+  FontFace = {eb}{it}{*-ExtraBoldItalic},
+  FontFace = {k}{n}{*-Black},
+  FontFace = {k}{it}{*-BlackItalic}
+]
+
+% LORA - All weights/variants
+\setmainfont{Lora}[
+  Path = ./recursos/tipografias/Lora_otf/,
+  Extension = .otf,
+  UprightFont = *-Regular,
+  ItalicFont = *-Italic,
+  FontFace = {m}{n}{*-Medium},
+  FontFace = {m}{it}{*-MediumItalic},
+  FontFace = {sb}{n}{*-SemiBold},
+  FontFace = {sb}{it}{*-SemiBoldItalic},
+  FontFace = {b}{n}{*-Bold},
+  FontFace = {b}{it}{*-BoldItalic}
+]
+
+% WEIGHT COMMANDS
+\newcommand{\thinwt}{\fontseries{ul}\selectfont}
+\newcommand{\extralightwt}{\fontseries{el}\selectfont}
+\newcommand{\lightwt}{\fontseries{l}\selectfont}
+\newcommand{\medwt}{\fontseries{m}\selectfont}
+\newcommand{\semiboldwt}{\fontseries{sb}\selectfont}
+\newcommand{\extraboldwt}{\fontseries{eb}\selectfont}
+\newcommand{\blackwt}{\fontseries{k}\selectfont}
+
+
+
+%% Formato IGN 2024 | Colores VLLC
+\usepackage{xcolor}
+\definecolor{schwarzBlau}{HTML}{242C4F}
+\definecolor{lichtBlau}{HTML}{45658D}
+\definecolor{gelb}{HTML}{E7BA61}
+\definecolor{colorTitulos}{HTML}{0FA6D8}
+% \definecolor{colorTexto}{HTML}{737373}
+
+
+
+% 2. Customize ITEMIZE markers
+\setbeamercolor{itemize item}{fg= lichtBlau}
+\setbeamercolor{itemize subitem}{fg= lichtBlau}
+\setbeamercolor{itemize subsubitem}{fg= lichtBlau}
+\setbeamercolor{enumerate item}{fg= lichtBlau}
+
+
+%% Table of contents (TOC)
+
+% 3. Get exact itemize triangle size
+\makeatletter
+\newsavebox{\trianglebox}
+\savebox{\trianglebox}{\usebeamertemplate{itemize item}}
+\protected\def\tocitem{%
+  {\color{lichtBlau}%
+   \usebeamertemplate{itemize item}% Same exact triangle as itemize
+   \hspace{0.3em}}%
+}
+\makeatother
+
+\colorlet{normaltext}{fg} % Alias for normal text color
+
+\setbeamertemplate{section in toc}{%
+  \leavevmode
+  \tocitem
+  {\color{normaltext}\inserttocsection}\par
+}
+
+\setbeamertemplate{subsection in toc}{%
+  \leavevmode
+  \hspace{1.2em}%
+  \tocitem
+  {\color{normaltext}\inserttocsubsection}\par
+}
+\makeatother
+
+
+
+%% footer legend and page number
+
+% Remove default footline
+\setbeamertemplate{footline}{}
+
+% Custom footline with manual frame exclusion
+\newcounter{excludedframes}
+\setcounter{excludedframes}{2} % Cover + Title + TOC = 3 frames
+
+\addtobeamertemplate{footline}{%
+  \ifnum\insertframenumber>\value{excludedframes}%
+    \ifnum\insertframenumber<\inserttotalframenumber% % Exclude last frame
+    \raisebox{0.3cm}[0pt][0pt]{%  % Moves entire footer upward
+      \hbox to \textwidth{%
+        \hspace*{0.5cm}%  % Right shift for left-aligned text
+        {\color{white}\insertshortauthor~~|~~\insertshorttitle~~|~~\insertshortdate}%
+        \hfill%
+        \makebox[2em][c]{%  % Fixed-width center-aligned box
+					\color{schwarzBlau}%
+					\bfseries%
+          \usebeamerfont{page number in head/foot}%
+          \the\numexpr\insertframenumber-\value{excludedframes}\relax%
+        }%
+        \hspace*{0.25cm}%  % Right margin
+      }%
+    }%
+  \fi
+  \fi
+}{}
+
+
+
+
+%% Titulos de cada transparencia
+\setbeamertemplate{frametitle}{%
+    \vspace{0.5cm}% Vertical adjustment
+		\usebeamercolor[fg]{frametitle}% Apply color settings
+    \usebeamerfont{frametitle}% Apply font settings
+    \insertframetitle%
+}
+\setbeamerfont{frametitle}{size=\small, series=\mdseries} % Montserrat
+\setbeamercolor{frametitle}{fg=white} % Set text color to white
+
+
+
+%% Custom title page
+
+%% Title page definition
+\setbeamertemplate{title page}{
+	%\vbox{}
+  %\vfill % Pushes content vertically centered
+  \begin{centering}
+    {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}
+    \vspace{0.5cm} % Space between title and author
+    {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}
+    \vspace{0.65cm}
+    {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}
+  \end{centering}
+  %\vfill % Pushes content vertically centered
+}
+
+%% Override author font specifically
+\setbeamerfont{title}{family=\rmfamily, series=\bfseries, size=\Large} % title apge title
+\setbeamerfont{author}{family=\rmfamily, series=\mdseries} % Uses Lora-Regular
+
+%% Title page data
+\title[Monitoreo automático de parámetros de relojes atómicos]{\textcolor{schwarzBlau}{Monitoreo automático de parámetros de relojes atómicos}}
+\author[Bettachini, V.A.]{\textcolor{gray}{Bettachini, V.A.} }
+%\institute{
+%	\textcolor{schwarzBlau}{
+%		Departamento Servicio Internacional de la Hora\\
+%		Dirección de Geodesia, Dirección Nacional de Servicios Geográficos
+%	}
+%}
+\date[2025-07-14]{
+	\textcolor{white}{14 de julio de 2025}
+}
+
+
+\begin{document}
+
+% Cover slide
+\usebackgroundtemplate{
+  \includegraphics[width=\paperwidth, height=\paperheight]{ersteIGN}
+  % \includegraphics[width=\paperwidth, height=\paperheight]{recursos/fondos/ersteIGN}
+} %% https://mprnotes.wordpress.com/2009/08/14/changing-background-image-of-latex-beamer/
+\begin{frame}[plain] % plain required for correct page numbering
+\end{frame}
+
+% Title slide
+\usebackgroundtemplate{
+  \includegraphics[width=\paperwidth, height=\paperheight]{titleBackgroundIGN}
+  % \includegraphics[width=\paperwidth, height=\paperheight]{recursos/fondos/titleBackgroundIGN}
+	}	% unset background % https://tex.stackexchange.com/questions/201013/how-to-include-a-background-image-to-only-one-page-of-a-beamer-presentation
+\begin{frame}[plain] 
+  \titlepage
+\end{frame}
+
+\usebackgroundtemplate{
+  \includegraphics[width=\paperwidth, height=\paperheight]{eachSlideIGN}
+  % \includegraphics[width=\paperwidth, height=\paperheight]{recursos/fondos/eachSlideIGN}
+} %% https://mprnotes.wordpress.com/2009/08/14/changing-background-image-of-latex-beamer/
+
+
+
+% Frame 1: Regular TOC 
+\begin{frame}
+	\frametitle{Sinopsis}
+	\tableofcontents
+\end{frame}
+% \frame{\frametitle{Sinopsis}\tableofcontents}
+
+
+
+%% Main matter
+\section{Servicio Internacional de la Hora}
+\begin{frame}
+	\frametitle{\textcolor{schwarzBlau}{Sinopsis}}
+	\tableofcontents[currentsection]
+\end{frame}
+% \frame{\tableofcontents[currentsection]}
+
+
+\begin{frame}{Tiempo Universal Coordinado y el IGN}
+	\includegraphics[trim={0cm 4cm 0 0},clip,width=1.1\columnwidth]{utc_ign}
+\end{frame}
+
+
+
+\begin{frame}{Equipamiento para el tiempo preciso del SIH}
+  \begin{columns}[c]
+    \begin{column}{0.3 \textwidth}
+			\includegraphics[width= \columnwidth]{ign_ptss_petit}
+    \end{column}
+		\begin{column}{0.7 \textwidth}
+			Microsemi Precise Time-Scale System 
+      \begin{itemize}[<+->]
+				\item Varios módulos de electrónica
+				\item Receptor GNSS
+				\item Cuatro computadoras
+				\item Patrón de frecuencia de \isotope[133]{Cs}\\
+					\includegraphics[width= 0.6\columnwidth]{5071A.png}
+				\end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+\begin{frame}{Patrón  de frecuencia de \isotope[133]{Cs}}
+  \begin{columns}[c]
+    \begin{column}{0.6 \textwidth}
+			\includegraphics[width= \columnwidth]{faq_time_cesiumclockinside_small.jpg}
+    \end{column}
+		\begin{column}{0.4 \textwidth}
+			\pause
+			Sensibilidad ante
+      \begin{itemize}[<+->]
+      % \begin{enumerate}[<+->]
+         \item Campos magnéticos
+         \item Campos eléctricos
+         \item Temperatura
+				 \item Vibraciones
+				 \item Presión atmosférica
+      \end{itemize}
+      % \end{enumerate}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+
+\section{Anomalías en serie de tiempo}
+\begin{frame}
+	\frametitle{\textcolor{schwarzBlau}{Sinopsis}}
+	\tableofcontents[currentsection]
+\end{frame}
+
+
+
+\begin{frame}{Procesos no estacionarios en serie de tiempo}
+	\begin{columns}
+		\begin{column}{0.45 \textwidth}
+			\includegraphics[width=\textwidth]{atomicclock_graphs.png}
+%			$\uparrow$ Estacionario: media estable
+%
+%			$\leftarrow$ no-estacionario: deriva de la media
+%
+%			$\downarrow$... enmascarada por dispersión
+			\pause
+			\[
+				\scriptstyle
+				\sigma_y^2(\tau) = \frac{1}{2 (N-1) \tau^2} \sum_{i=1}^{N-2} \left( x_{i+2} - 2 x_{i+1} + x_i \right)^2
+			\]
+		\end{column} 
+		\pause
+    \begin{column}{0.55 \textwidth}
+			% % Answer: [trim={left bottom right top},clip]
+			\includegraphics[trim={0cm 0 2cm 0},clip,width=\textwidth]{nunzi2007_fig1.png}
+			% Indicio de perturbación externa
+		\end{column} 
+	\end{columns}
+	% La observación de porciones de la serie temporal de fase que presentan medias /o dispersiones distintas que otras dejan en claro que el proceso que las generan no es estacionario.
+	%	\begin{columns}[b]
+%		\begin{column}
+%			\includegraphics[width=\textwidth]{handbookFig3b.pdf}
+%			\caption{La deriva de frecuencia recién es apreciable a la derecha de las secciones de ajustes a trozos usados para caracterizar ruidos con la varianza de Allan. Reproducide de \cite{riley_handbook_2008}.}
+%		\end{column}
+%		\begin{column}
+%			\includegraphics[width=\textwidth]{lunaAnálisis2016Fig9.pdf}
+%			\caption{Caracterizar ruidos blancos y de centelleo requierió de una serie temporal dos semanas en el IGN. Reproducido de \cite{luna_alisis_2016}.}
+%		\end{column}
+%	\end{columns}
+%	Analizar la varianza de Allan para detectar una deriva de la frecuencia requiere una serie temporal más larga que la necesaria para caracterizar ruidos.
+\end{frame}
+
+
+\section{Detección de anomalías}
+\begin{frame}
+	\frametitle{\textcolor{schwarzBlau}{Sinopsis}}
+	\tableofcontents[currentsection]
+\end{frame}
+
+
+
+\begin{frame}{Actualmente: diagnóstico tras semanas/meses}
+	\begin{columns}[b]
+		\begin{column}{0.4 \textwidth}
+			\includegraphics[width= \columnwidth]{handbookFig3b.pdf}
+			Pendiente $\rightarrow$ proceso
+		\end{column}
+		\pause
+		\begin{column}{0.5 \textwidth}
+			\includegraphics[width= \columnwidth]{lunaAnálisis2016Fig9.pdf}
+			% Dos semanas: ruido blanco y de centelleo 
+		\end{column}
+	\end{columns}
+\end{frame}
+
+
+\begin{frame}{¿Qué quisiéramos? ¡Alerta automática!}
+	\begin{columns}[c]
+		\begin{column}<3->{0.6 \textwidth}
+			\begin{itemize}
+				\item Anomalías en la serie temporal
+				\begin{itemize}
+					\item Valores estadísticos extremos (\emph{outliers})%: glitches
+					\item Saltos de fase
+					\item Puntos de inflexión en la tendencia
+				\end{itemize}
+				\uncover<4->{
+					\item Algoritmos de mayor desempeño (F1)
+				}
+				\begin{itemize}
+				\uncover<5->{
+					\item Factorización de \emph{outliers} locales en subsecuencia (Sub-LOF)
+					\begin{itemize}
+						\item \emph{outliers} y saltos de fase
+						\item Paquete Python TimeEval
+					\end{itemize}
+				}
+				\uncover<6->{
+					\item Detección de cambio puntual (CPD)
+					\begin{itemize}
+						\item Inflexiones en serie de frecuencias
+						\item Paquete Python Raptures
+					\end{itemize}
+				}
+				\end{itemize}
+%				\uncover<7->{
+%					\item Y algo más ambicioso: \texbf{buscar correlaciones temporales con anomalías en parámetros que afectan al patrón de \isotope[133]{Cs}\}
+%				}
+			\end{itemize}
+		\end{column}
+		\begin{column}<2->{0.5 \textwidth}
+			\includegraphics[trim={0cm 8cm 0 0},clip,width= \columnwidth]{chenEtAl2024.pdf}
+    \end{column}
+	\end{columns}
+\end{frame}
+
+
+
+\begin{frame}{Etapas hacia una implementación}
+	\begin{enumerate}[<+->]
+		\item Contar con muchos ejemplos de anomalías
+		\begin{itemize}
+			\item Solicitar series usadas en Chen et al. (2024) al NRC de Canadá
+		\end{itemize}
+		\item Implementación local de algoritmos Sub-LOF y CPD
+		\begin{itemize}
+			\item Reproducir resultados de Chen et al. (2024) con series provistas
+		\end{itemize}
+		\item Minar series de tiempo propias en búsqueda de anomalías
+		\begin{itemize}
+			\item Evaluar número de anomalías detectadas con Sub-LOF y CPD
+		\end{itemize}
+		\item Correlacionar anomalías en tiempo con las de parámetros
+		\begin{itemize}
+			\item Registrar series temporales de parámetros internos y ambientales
+			\item Detección \emph{clásica} (Z-score, ARIMA) o con ML (autoencoder)
+			\item Evaluar algoritmos de correlación temporal de sucesos entre series
+		\end{itemize}
+	\end{enumerate}
+\end{frame}
+
+
+
+
+\section{Registro de series}
+\begin{frame}
+	\frametitle{\textcolor{schwarzBlau}{Sinopsis}}
+	\tableofcontents[currentsection]
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Serie de tiempo en INTI}
+	\begin{columns}[c]
+		\begin{column}{0.35 \textwidth}
+			\includegraphics[width= \columnwidth]{inti_equipo}
+    \end{column}
+		\begin{column}{0.6 \textwidth}
+			\includegraphics[width= 0.4\columnwidth]{inti_logo}
+			\uncover<2->{
+			\includegraphics[width= 0.8\columnwidth]{inti_schematic}
+			% \includegraphics[width= \columnwidth]{inti_relojes1}
+			% Hablar de que se registra three-corned hat -> Allan de los 3 Cs
+			}
+    \end{column}
+	\end{columns}
+\end{frame}
+
+
+\begin{frame}{El patrón informa parámetros internos}
+ \begin{columns}[c]
+		\begin{column}{0.5 \textwidth}
+			\includegraphics[width= 0.7\columnwidth]{5071A.png}
+			\pause
+			Consultado vía RS-232 por un programa en LabView
+			\includegraphics[width= \columnwidth]{serialLabView}
+    \end{column}
+		\pause
+    \begin{column}{0.5 \textwidth}
+			\verbatiminput{figs/output5071A.txt}
+    \end{column}
+ \end{columns}
+\end{frame}
+
+
+\begin{frame}{Registro de parámetros en INTI}
+% \begin{frame}{Instituto Nacional de Tecnología Industrial}
+  \begin{columns}[c]
+		\begin{column}{0.5 \textwidth}
+		  \includegraphics[width= \columnwidth]{photo_2024-10-20_11-06-14.jpg}
+			Parámetros internos 5071A INTI\\
+			registrados por programa LabView
+    \end{column}
+		\pause
+    \begin{column}{0.5 \textwidth}
+			\includegraphics[width= \columnwidth]{TPH_2024}
+			Parámetros ambientales en\\
+			sala relojes INTI
+    \end{column}
+	\end{columns}
+\end{frame}
+
+
+
+\begin{frame}{BIPM y parámetros ambientales}
+  \begin{columns}[c]
+		\begin{column}<2->{0.4 \textwidth}
+			Recomienda informar:
+			\begin{itemize}
+				\item Temperatura
+				\item Presión atmosférica
+				\item Humedad
+				\uncover<3->{\item En el laboratorio}
+				\uncover<4->{\item Exterior (meteorología)}
+			\end{itemize}
+%			\begin{itemize}[<+->]
+%				\item Temperatura
+%				\item Humedad
+%				\item Presión atmosférica
+%				\item En el laboratorio
+%				\item y el exterior (meteorológicas)
+%			\begin{itemize}
+    \end{column}
+    \begin{column}{0.7 \textwidth}
+			\includegraphics[trim={0cm 13cm 0 0},clip,width= \columnwidth]{meteo_format_CCTF-V1.0.pdf}
+			% https://webtai.bipm.org/database/documents/meteo_format_CCTF-V1.0.pdf
+    \end{column}
+	\end{columns}
+\end{frame}
+
+
+
+\begin{frame}{Registro de parámetros ambientales en IGN}
+  \begin{columns}[c]
+		\begin{column}<1->{0.62 \textwidth}
+			En la sala de servidores
+			\begin{itemize}%[<+->]
+         \item Arduino Nano: adquisición
+         \item BPM280: temperatura, presión
+				 \item AHT10: temperatura, humedad 
+      \end{itemize}
+			
+			\uncover<2->{
+			En la terraza del edificio técnico
+			\begin{itemize}
+         \item Sensores meteorológicos
+      \end{itemize}
+			\includegraphics[width= \columnwidth]{anotatedMeteo}
+      %\begin{itemize}
+			%	\item sensor temperatura
+			%	\item sensor presión
+      %\end{itemize}
+			%\pause
+			%¿Funcionan?
+			%Aún no se trabajó con ellos.
+		}
+    \end{column}
+    \begin{column}<1->{0.35 \textwidth}
+			\includegraphics[width= \columnwidth]{nano}
+			%\includegraphics[width= 0.5\columnwidth]{arduino}
+			%\includegraphics[width= 0.45\columnwidth]{aht10-full}
+			%\includegraphics[width= 0.45\columnwidth]{BMP280}
+    \end{column}
+	\end{columns}
+\end{frame}
+
+
+%% Conclusión
+\begin{frame}
+	\frametitle{Para concluir}
+		\begin{itemize}[<+->]
+    \item Identificación temprana de anomalías en serie de tiempo
+		\begin{itemize}[<+->]
+			\item Más raṕido monitoreo del estado del patrón de frecuencia
+		\end{itemize}
+    \item Registro de parámetros ambientales
+		\begin{itemize}[<+->]
+			\item Seguir recomendación CCTF 4 del BIPM e informales regularmente
+			\item Intentar correlacionar anomalías tiempo/ambientales
+			\item ¿Puede controlarse algo del ambiente para mejorar la precisión?
+		\end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+
+%% Preguntas
+	\begin{frame}{Sus preguntas}
+		\centering
+		\includegraphics[width=0.6\textwidth]{sihLiber}
+	\end{frame}
+
+
+
+%% Closing slide
+\usebackgroundtemplate{
+  \includegraphics[width=\paperwidth, height=\paperheight]{letzteIGN}
+	}	% unset background % https://tex.stackexchange.com/questions/201013/how-to-include-a-background-image-to-only-one-page-of-a-beamer-presentation
+\begin{frame} 
+\end{frame}
+
+
+\end{document}
